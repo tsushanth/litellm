@@ -331,3 +331,25 @@ class TestProviderConfigManagerAzureAnthropicMessages:
         )
 
         assert config is None
+
+    def test_output_config_stripped_from_messages_request(self):
+        """Azure AI Foundry rejects ``output_config`` with 400; verify it is dropped from the messages path."""
+        config = AzureAnthropicMessagesConfig()
+
+        messages = [{"role": "user", "content": "Hello"}]
+        anthropic_messages_optional_request_params = {
+            "max_tokens": 100,
+            "output_config": {"effort": "low"},
+        }
+        litellm_params = GenericLiteLLMParams(api_key="test-key")
+        headers = {"x-api-key": "test-key", "anthropic-version": "2023-06-01"}
+
+        result = config.transform_anthropic_messages_request(
+            model="claude-haiku-4-5",
+            messages=messages,
+            anthropic_messages_optional_request_params=anthropic_messages_optional_request_params,
+            litellm_params=litellm_params,
+            headers=headers,
+        )
+
+        assert "output_config" not in result
