@@ -167,4 +167,5 @@ class AzureAnthropicMessagesConfig(AnthropicMessagesConfig):
             headers=headers,
         )
         self._remove_scope_from_cache_control(anthropic_messages_request)
+        anthropic_messages_request.pop("output_config", None)
         return anthropic_messages_request

@@ -287,6 +287,32 @@ class TestAzureAnthropicMessagesConfig:
             result["messages"][0]["content"][0]["cache_control"]["type"] == "ephemeral"
         )
 
+    def test_transform_anthropic_messages_request_strips_output_config(self):
+        """output_config is dropped so Azure AI Foundry doesn't reject with 400.
+
+        Azure AI Foundry Claude models reject ``output_config`` with
+        "This model does not support the effort parameter." (#31187).
+        """
+        config = AzureAnthropicMessagesConfig()
+        model = "claude-haiku-4-5"
+        messages = [{"role": "user", "content": "Hello"}]
+        anthropic_messages_optional_request_params = {
+            "max_tokens": 1024,
+            "output_config": {"effort": "low"},
+        }
+        litellm_params = GenericLiteLLMParams()
+        headers = {}
+
+        result = config.transform_anthropic_messages_request(
+            model=model,
+            messages=messages,
+            anthropic_messages_optional_request_params=anthropic_messages_optional_request_params,
+            litellm_params=litellm_params,
+            headers=headers,
+        )
+
+        assert "output_config" not in result
+
 
 class TestProviderConfigManagerAzureAnthropicMessages:
     """Test ProviderConfigManager returns correct config for Azure AI Anthropic Messages API"""

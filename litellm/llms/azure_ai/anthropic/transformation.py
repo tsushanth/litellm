@@ -137,5 +137,6 @@ class AzureAnthropicConfig(AnthropicConfig):
         data.pop("extra_body", None)
         data.pop("max_retries", None)
         data.pop("stream_options", None)
+        data.pop("output_config", None)
 
         return data
