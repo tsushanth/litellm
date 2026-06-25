@@ -42982,6 +42982,34 @@
         "supports_tool_choice": true,
         "supports_vision": true
     },
+    "bedrock_mantle/xai.grok-4": {
+        "input_cost_per_token": 3e-06,
+        "output_cost_per_token": 1.5e-05,
+        "litellm_provider": "bedrock_mantle",
+        "max_input_tokens": 256000,
+        "max_output_tokens": 256000,
+        "max_tokens": 256000,
+        "mode": "chat",
+        "supported_endpoints": ["/v1/chat/completions", "/v1/responses"],
+        "supports_function_calling": true,
+        "supports_tool_choice": true,
+        "supports_web_search": true,
+        "source": "https://docs.x.ai/docs/models"
+    },
+    "bedrock_mantle/xai.grok-4.3": {
+        "input_cost_per_token": 3e-06,
+        "output_cost_per_token": 1.5e-05,
+        "litellm_provider": "bedrock_mantle",
+        "max_input_tokens": 256000,
+        "max_output_tokens": 256000,
+        "max_tokens": 256000,
+        "mode": "chat",
+        "supported_endpoints": ["/v1/chat/completions", "/v1/responses"],
+        "supports_function_calling": true,
+        "supports_tool_choice": true,
+        "supports_web_search": true,
+        "source": "https://docs.x.ai/docs/models"
+    },
     "volcengine/doubao-seed-2-0-pro-260215": {
         "litellm_provider": "volcengine",
         "max_input_tokens": 256000,

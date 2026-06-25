@@ -452,6 +452,23 @@ class TestBedrockMantleResponsesRegistry:
         assert isinstance(cfg, BedrockMantleResponsesAPIConfig)
         assert cfg.use_openai_path is True
 
+    @pytest.mark.parametrize("model", ["xai.grok-4", "xai.grok-4.3"])
+    def test_registry_returns_native_config_for_xai_grok(self, local_cost_map, model):
+        # Regression for #31196: xai.grok-* models support the native Responses
+        # API on Bedrock Mantle but were incorrectly routed through chat-completions
+        # emulation because the price-map lacked their supported_endpoints entry.
+        # They use the standard /v1/responses path (no use_openai_responses_path).
+        from litellm.utils import ProviderConfigManager
+
+        cfg = ProviderConfigManager.get_provider_responses_api_config(
+            provider="bedrock_mantle",
+            model=model,
+        )
+        assert isinstance(cfg, BedrockMantleResponsesAPIConfig), (
+            f"{model} should return BedrockMantleResponsesAPIConfig, got {cfg!r}"
+        )
+        assert cfg.use_openai_path is False
+
     def test_unmapped_frontier_model_falls_through_to_none(self, restore_model_cost):
         # The gate is data-driven, not name-based: an unseen model not yet in the
         # price map (e.g. a future gpt-6) has no capability signal, so it falls
