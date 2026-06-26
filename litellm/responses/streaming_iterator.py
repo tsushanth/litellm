@@ -78,6 +78,7 @@ class BaseResponsesAPIStreamingIterator:
         self._completed_response_cache_hit: Optional[bool] = None
         self._persist_completed_response_before_logging = True
         self._stream_created_time: float = time.time()
+        self._completion_start_time: Optional[datetime] = None
 
         # track request context for hooks
         self.litellm_metadata = litellm_metadata
@@ -131,6 +132,9 @@ class BaseResponsesAPIStreamingIterator:
         if chunk == STREAM_SSE_DONE_STRING:
             self.finished = True
             return None
+
+        if self._completion_start_time is None:
+            self._completion_start_time = datetime.now()
 
         try:
             # Parse the JSON chunk
@@ -318,6 +322,11 @@ class BaseResponsesAPIStreamingIterator:
                 pass
 
         end_time = datetime.now()
+        if self._completion_start_time is not None:
+            self.logging_obj.completion_start_time = self._completion_start_time
+            self.logging_obj.model_call_details[
+                "completion_start_time"
+            ] = self._completion_start_time
         if is_async:
             asyncio.create_task(
                 self.logging_obj.async_success_handler(
